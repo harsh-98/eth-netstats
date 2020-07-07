@@ -3,7 +3,7 @@
 
 netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, socket, _, toastr) {
 
-	var MAX_BINS = 40;
+	var MAX_BINS = 2;
 
 	// Main Stats init
 	// ---------------
@@ -26,6 +26,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 	$scope.difficultyChart = _.fill(Array(MAX_BINS), 2);
 	$scope.transactionDensity = _.fill(Array(MAX_BINS), 2);
 	$scope.gasSpending = _.fill(Array(MAX_BINS), 2);
+	$scope.height = _.fill(Array(MAX_BINS), 2);
 	$scope.miners = [];
 
 
@@ -337,6 +338,9 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 
 				if( !_.isEqual($scope.lastBlocksTime, data.blocktime) && data.blocktime.length >= MAX_BINS )
 					$scope.lastBlocksTime = data.blocktime;
+
+				if( !_.isEqual($scope.height, data.height) && data.height.length >= MAX_BINS )
+					$scope.height = data.height;
 
 				if( !_.isEqual($scope.difficultyChart, data.difficulty) && data.difficulty.length >= MAX_BINS )
 					$scope.difficultyChart = data.difficulty;

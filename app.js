@@ -48,14 +48,7 @@ var server;
 
 
 // Init API Socket connection
-api = new Primus(server, {
-	transformer: 'websockets',
-	pathname: '/api',
-	parser: 'JSON'
-});
-
-api.plugin('emit', require('primus-emit'));
-api.plugin('spark-latency', require('primus-spark-latency'));
+api = require('socket.io')(server).of('/api');
 
 
 // Init Client Socket connection
@@ -96,19 +89,26 @@ Nodes.setChartsCallback(function (err, charts)
 	}
 });
 
-
+function getLatencyMs(socket) {
+	return (
+		socket.handshake.issued -
+		parseFloat(socket.handshake.query.t) * 1000
+	);
+}
 // Init API Socket events
-api.on('connection', function (spark)
+api.on('connection', function (socket)
 {
-	console.info('API', 'CON', 'Open:', spark.address.ip);
+	console.log('API', 'CON', 'Open:', socket.handshake.headers.host);
 
-	spark.on('hello', function (data)
+	socket.on('hello', function (data)
 	{
 		console.info('API', 'CON', 'Hello', data['id']);
-
-		if( _.isUndefined(data.secret) || WS_SECRET.indexOf(data.secret) === -1 || banned.indexOf(spark.address.ip) >= 0 )
+		let url = socket.handshake.headers.host.split(':');
+		ip = url[0];
+		port = url[1];
+		if( _.isUndefined(data.secret) || WS_SECRET.indexOf(data.secret) === -1 || banned.indexOf(socket.handshake.headers.host) >= 0 )
 		{
-			spark.end(undefined, { reconnect: false });
+			socket.end(undefined, { reconnect: false });
 			console.error('API', 'CON', 'Closed - wrong auth', data);
 
 			return false;
@@ -116,9 +116,9 @@ api.on('connection', function (spark)
 
 		if( !_.isUndefined(data.id) && !_.isUndefined(data.info) )
 		{
-			data.ip = spark.address.ip;
-			data.spark = spark.id;
-			data.latency = spark.latency || 0;
+			data.ip = url.join(":");
+			data.spark = socket.id;
+			data.latency = getLatencyMs(socket) || 0;
 
 			Nodes.add( data, function (err, info)
 			{
@@ -130,7 +130,7 @@ api.on('connection', function (spark)
 
 				if(info !== null)
 				{
-					spark.emit('ready');
+					socket.emit('ready');
 
 					console.success('API', 'CON', 'Connected', data.id);
 
@@ -144,7 +144,7 @@ api.on('connection', function (spark)
 	});
 
 
-	spark.on('update', function (data)
+	socket.on('update', function (data)
 	{
 		if( !_.isUndefined(data.id) && !_.isUndefined(data.stats) )
 		{
@@ -177,7 +177,7 @@ api.on('connection', function (spark)
 	});
 
 
-	spark.on('block', function (data)
+	socket.on('block', function (data)
 	{
 		if( !_.isUndefined(data.id) && !_.isUndefined(data.block) )
 		{
@@ -210,7 +210,7 @@ api.on('connection', function (spark)
 	});
 
 
-	spark.on('pending', function (data)
+	socket.on('pending', function (data)
 	{
 		if( !_.isUndefined(data.id) && !_.isUndefined(data.stats) )
 		{
@@ -238,7 +238,7 @@ api.on('connection', function (spark)
 	});
 
 
-	spark.on('stats', function (data)
+	socket.on('stats', function (data)
 	{
 		if( !_.isUndefined(data.id) && !_.isUndefined(data.stats) )
 		{
@@ -270,7 +270,7 @@ api.on('connection', function (spark)
 	});
 
 
-	spark.on('history', function (data)
+	socket.on('history', function (data)
 	{
 		console.success('API', 'HIS', 'Got history from:', data.id);
 
@@ -296,11 +296,11 @@ api.on('connection', function (spark)
 	});
 
 
-	spark.on('node-ping', function (data)
+	socket.on('node-ping', function (data)
 	{
 		var start = (!_.isUndefined(data) && !_.isUndefined(data.clientTime) ? data.clientTime : null);
 
-		spark.emit('node-pong', {
+		socket.emit('node-pong', {
 			clientTime: start,
 			serverTime: _.now()
 		});
@@ -309,7 +309,7 @@ api.on('connection', function (spark)
 	});
 
 
-	spark.on('latency', function (data)
+	socket.on('latency', function (data)
 	{
 		if( !_.isUndefined(data.id) )
 		{
@@ -335,7 +335,7 @@ api.on('connection', function (spark)
 			{
 				var range = Nodes.getHistory().getHistoryRequestRange();
 
-				spark.emit('history', range);
+				socket.emit('history', range);
 				console.info('API', 'HIS', 'Asked:', data.id, 'for history:', range.min, '-', range.max);
 
 				Nodes.askedForHistory(true);
@@ -344,9 +344,9 @@ api.on('connection', function (spark)
 	});
 
 
-	spark.on('end', function (data)
+	socket.on('end', function (data)
 	{
-		Nodes.inactive(spark.id, function (err, stats)
+		Nodes.inactive(socket.id, function (err, stats)
 		{
 			if(err !== null)
 			{
@@ -359,7 +359,7 @@ api.on('connection', function (spark)
 					data: stats
 				});
 
-				console.warn('API', 'CON', 'Connection with:', spark.id, 'ended:', data);
+				console.warn('API', 'CON', 'Connection with:', socket.id, 'ended:', data);
 			}
 		});
 	});

@@ -1,0 +1,8 @@
+# https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties
+# https://en.wikipedia.org/wiki/Indentation_style for selecting style
+# https://editorconfig.org/
+[*.js]
+indent_size = 4
+indent_style = tab
+indent_brace_style = Allman
+quote_type = single

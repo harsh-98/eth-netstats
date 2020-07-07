@@ -97,18 +97,25 @@ angular.module('netStatsApp.directives', [])
 				data: '@'
 			},
 			compile: function (tElement, tAttrs, transclude)
-			{
+			{	
 				tElement.replaceWith('<span>' + tAttrs.data + "</span>");
 
 				return function(scope, element, attrs)
 				{
 					attrs.$observe("data", function (newValue)
-					{
+					{	
 						element.html(newValue);
 						element.addClass("big-details");
 						element.sparkline('html', {
 							type: 'bar',
-							tooltipSuffix: (attrs.tooltipsuffix || '')
+							tooltipSuffix: (attrs.tooltipsuffix || ''),
+							tooltipFormatter: function (spark, opt, ms) {
+								var tooltip = '<div class="tooltip-arrow"></div><div class="tooltip-inner">';
+								tooltip += "Block #"+scope.$parent.height[ms[0].offset]+": "+ms[0].value+ (attrs.tooltipsuffix || '');
+								tooltip += '</div>';
+
+								return tooltip;
+							}
 						});
 					});
 				};

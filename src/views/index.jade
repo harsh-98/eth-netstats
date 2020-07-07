@@ -17,7 +17,7 @@ block content
           div.pull-left.icon-full-width
             i.icon-uncle
           div.big-details-holder
-            span.small-title uncles&nbsp;
+            span.small-title raq request&nbsp;
               span.small (current / last 50)
             span.big-details {{ bestStats.block.uncles.length }}/{{ uncleCount }}
           div.clearfix
@@ -70,12 +70,17 @@ block content
           div.col-xs-2.stat-holder.box
             div.gasprice.text-info
               i.icon-gasprice
-              span.small-title gas price
+              span.small-title reveal request(last block)
               span.small-value {{ bestStats.gasPrice.toString() | gasPriceFilter }}
           div.col-xs-2.stat-holder.box
             div.gasprice.text-info
               i.icon-gasprice
-              span.small-title gas limit
+              span.small-title commit request(last block)
+              span.small-value {{ bestStats.gasPrice.toString() | gasPriceFilter }}
+          div.col-xs-2.stat-holder.box
+            div.gasprice.text-info
+              i.icon-gasprice
+              span.small-title tally request(last block)
               span.small-value {{ bestStats.block.gasLimit }} gas
           div.col-xs-2.stat-holder.box
             div.page-latency(class="{{ {active: true, latency: latency} | latencyClass }}")
@@ -87,7 +92,6 @@ block content
               i.icon-bulb
               span.small-title uptime
               span.small-value {{ upTimeTotal | upTimeFilter }}
-          div.col-xs-2.stat-holder.box
 
         div.row
           div.col-xs-8
@@ -119,14 +123,14 @@ block content
                   div.blocks-holder(ng-repeat='miner in miners track by miner.miner', data-toggle="tooltip", data-placement="right", data-original-title="{{miner.blocks}}")
                     div.block-count(class="{{miner.blocks | minerBlocksClass : 'text-'}}") {{miner.blocks}}
                     //- div.small-title-miner {{miner.miner | minerNameFilter : miner.name}}
-                    div.small-title-miner {{miner.miner}}
+                    div.small-title-miner {{miner.miner.slice(0,18)+"..."+miner.miner.slice(-18)}}
                     minerblock(blocks="{{miner.blocks}}")
                     div.clearfix
 
               div.col-xs-3.stat-holder
                 div.big-info.chart.text-info
                   //- i.icon-uncle
-                  span.small-title uncle count&nbsp;
+                  span.small-title rad request&nbsp;
                     span.small (25 blocks per bar)
                   //- span.small-value {{ bestStats.block.uncles.length }}/{{ uncleCount }}
                   sparkchart.big-details.spark-uncles(data="{{uncleCountChart.join(',')}}")
@@ -140,7 +144,7 @@ block content
               div.col-xs-3.stat-holder
                 div.big-info.chart.text-info
                   //- i.icon-gasprice
-                  span.small-title gas spending
+                  span.small-title txn fees
                   sparkchart.big-details.spark-gasspending(data="{{gasSpending.join(',')}}")
 
               div.col-xs-3.stat-holder
@@ -163,7 +167,7 @@ block content
             div.active-nodes.text-warning
               i.icon-warning-o
               span.small-title ATTENTION!
-              span.small-value This page does not represent the entire state of the ethereum network - listing a node on this page is a voluntary process.
+              span.small-value This page does not represent the entire state of the witnet network - listing a node on this page is a voluntary process.
           //- div.col-xs-12.stat-holder.box
           //-   div.active-nodes.text-danger
           //-     i.icon-hashrate
