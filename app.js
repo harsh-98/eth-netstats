@@ -98,8 +98,6 @@ function getLatencyMs(socket) {
 // Init API Socket events
 api.on('connection', function (socket)
 {
-	console.log('API', 'CON', 'Open:', socket.handshake.headers.host);
-
 	socket.on('hello', function (data)
 	{
 		console.info('API', 'CON', 'Hello', data['id']);
@@ -143,7 +141,7 @@ api.on('connection', function (socket)
 		}
 	});
 
-
+	// TODO UPDATE
 	socket.on('update', function (data)
 	{
 		if( !_.isUndefined(data.id) && !_.isUndefined(data.stats) )
@@ -227,13 +225,69 @@ api.on('connection', function (socket)
 						data: stats
 					});
 
-					console.success('API', 'TXS', 'Pending:', data.stats['pending'], 'from:', data.id);
+					console.success('API', 'TXS', `Pending VTT: ${stats.pendingVTT} RAD: ${stats.pendingRAD}`, 'from:', data.id);
 				}
 			});
 		}
 		else
 		{
 			console.error('API', 'TXS', 'Pending error:', data);
+		}
+	});
+
+	socket.on('activePkh', function (data)
+	{
+		if( !_.isUndefined(data.id) && !_.isUndefined(data.count) )
+		{
+			Nodes.updateActivePkh(data, function (count) {
+				if(count == null)
+				{
+					console.error('API', 'PKH', data.id, "failed");
+				}
+
+				if(count !== null)
+				{
+					client.write({
+						action: 'activePkh',
+						data: {
+							activePkh: count
+						}
+					});
+
+					console.success('API', 'PKH', `Active pkh count update to ${count}`, data.id);
+				}
+			});
+		}
+		else
+		{
+			console.error('API', 'PKH', 'ActivePkh error:', data);
+		}
+	});
+
+	socket.on('superBlock', function (data)
+	{
+		if( !_.isUndefined(data.id) && !_.isUndefined(data.super) )
+		{
+			Nodes.updateSuperBlock(data, function (sblk_details) {
+				if(sblk_details == null)
+				{
+					console.error('API', 'SUP', data.id, "failed");
+				}
+
+				if(sblk_details !== null)
+				{
+					client.write({
+						action: 'superBlock',
+						data: sblk_details,
+					});
+
+					console.success('API', 'SUP', `super block index updated to ${sblk_details.index}[${sblk_details.hash}]`, data.id);
+				}
+			});
+		}
+		else
+		{
+			console.error('API', 'SUP', 'super block error:', data);
 		}
 	});
 
@@ -366,12 +420,16 @@ api.on('connection', function (socket)
 });
 
 
+client.on('disconnection', function(spark){
+	console.error('CLI', 'CON', `Connection end error from ${spark.address.ip}:${spark.address.port}`);
+});
 
 client.on('connection', function (clientSpark)
 {
+	console.success('CLI', 'CON', `connected to ${clientSpark.address.ip}:${clientSpark.address.port}`);
 	clientSpark.on('ready', function (data)
 	{
-		clientSpark.emit('init', { nodes: Nodes.all() });
+		clientSpark.emit('init', Nodes.all());
 
 		Nodes.getCharts();
 	});

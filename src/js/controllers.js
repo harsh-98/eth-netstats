@@ -11,11 +11,14 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 	$scope.frontierHash = '0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa';
 	$scope.nodesTotal = 0;
 	$scope.nodesActive = 0;
+	$scope.explorerUrl = "https://witnet.network/search";
 	$scope.bestBlock = 0;
 	$scope.lastBlock = 0;
 	$scope.lastDifficulty = 0;
 	$scope.upTimeTotal = 0;
 	$scope.avgBlockTime = 0;
+	$scope.activePkh = 0;
+	$scope.superBlock = {};
 	$scope.blockPropagationAvg = 0;
 	$scope.avgHashrate = 0;
 	$scope.RADCount = 0;
@@ -124,7 +127,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 
 	socket.on('init', function(data)
 	{
-		$scope.$apply(socketAction("init", data.nodes));
+		$scope.$apply(socketAction("init", data));
 	});
 
 	socket.on('client-latency', function(data)
@@ -143,8 +146,8 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 		switch(action)
 		{
 			case "init":
-				$scope.nodes = data;
-
+				$scope.nodes = data.nodes;
+				// console.log(data)
 				_.forEach($scope.nodes, function (node, index) {
 
 					// Init hashrate
@@ -172,6 +175,8 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 					updateActiveNodes();
 				}
 
+				$scope.activePkh = data.active;
+				$scope.superBlock = data.superBlock;
 				break;
 
 			case "add":
@@ -260,8 +265,10 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 				{
 					var node = $scope.nodes[index];
 
-					if( !_.isUndefined(node) && !_.isUndefined(node.stats.pending) && !_.isUndefined(data.pending) )
-						$scope.nodes[index].stats.pending = data.pending;
+					if( !_.isUndefined(node) && !_.isUndefined(node.stats) ) {
+						$scope.nodes[index].stats.pendingVTT = data.pendingVTT;
+						$scope.nodes[index].stats.pendingRAD = data.pendingRAD;
+					}
 				}
 
 				break;
@@ -325,10 +332,20 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 				$scope.uncleCountChart = data;
 
 				break;
+			case "activePkh":
+				if( !_.isEqual($scope.activePkh, data.activePkh) )
+					$scope.activePkh = data.activePkh;
+				break;
+
+			case "superBlock":
+				if( !_.isEqual($scope.superBlock, data) )
+					$scope.superBlock = data;
+				break;
 
 			case "charts":
 				if( !_.isEqual($scope.avgBlockTime, data.avgBlocktime) )
 					$scope.avgBlockTime = data.avgBlocktime;
+
 
 				if( !_.isEqual($scope.avgHashrate, data.avgHashrate) )
 					$scope.avgHashrate = data.avgHashrate;
@@ -353,7 +370,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 				// data.uncleCount.reverse();
 
 				if( !_.isEqual($scope.RADCountChart, data.RADCount) && data.RADCount.length >= MAX_BINS ) {
-					$scope.RADCount = data.RADCount[data.RADCount.length-2] + data.RADCount[data.RADCount.length-1];
+					$scope.RADCount = _.sum(data.RADCount);
 					$scope.RADCountChart = data.RADCount;
 				}
 
@@ -554,7 +571,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 			// 	return result;
 			// }, {});
 
-			var bestBlock = _.max($scope.nodes, function (node)
+			var stats = _.max($scope.nodes, function (node)
 			{
 				// if( $scope.chains[node.stats.block.number].fork === node.stats.block.fork && $scope.chains[node.stats.block.number].score / $scope.maxScore >= 0.5 )
 				// {
@@ -562,14 +579,13 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 				// }
 
 				// return 0;
-			}).stats.block.number;
+			}).stats;
+			var bestBlock = stats.block.number;
 
 			if( bestBlock !== $scope.bestBlock )
 			{
 				$scope.bestBlock = bestBlock;
-				$scope.bestStats = _.max($scope.nodes, function (node) {
-					return parseInt(node.stats.block.number);
-				}).stats;
+				$scope.bestStats = stats;
 
 				$scope.lastBlock = $scope.bestStats.block.arrived;
 				$scope.lastDifficulty = $scope.bestStats.block.difficulty;

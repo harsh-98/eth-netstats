@@ -211,6 +211,18 @@ angular.module('netStatsApp.filters', [])
 		return hash.substr(0, 8) + '...' + hash.substr(56, 8);
 	}
 })
+.filter('bigHashFilter', function() {
+	return function(hash) {
+		const x= 15;
+		if(typeof hash === 'undefined')
+			return "?";
+
+		if(hash.substr(0,2) === '0x')
+			hash = hash.substr(2,64);
+
+		return hash.slice(0, x) + '...' + hash.slice(-x);
+	}
+})
 .filter('timeClass', function() {
 	return function(timestamp, active) {
 		if( ! active)
