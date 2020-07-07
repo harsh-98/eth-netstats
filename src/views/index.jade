@@ -19,7 +19,7 @@ block content
           div.big-details-holder
             span.small-title raq request&nbsp;
               span.small (current / last 50)
-            span.big-details {{ bestStats.block.uncles.length }}/{{ uncleCount }}
+            span.big-details {{ bestStats.block.data_request_txns.length }}/{{ RADCount }}
           div.clearfix
       div.col-xs-2.stat-holder
         div.big-info.blocktime(class="{{ lastBlock | timeClass : true }}")
@@ -70,18 +70,19 @@ block content
           div.col-xs-2.stat-holder.box
             div.gasprice.text-info
               i.icon-gasprice
-              span.small-title reveal request(last block)
-              span.small-value {{ bestStats.gasPrice.toString() | gasPriceFilter }}
+              span.small-title reveal req(last block)
+              //- span.small-value {{ bestStats.gasPrice.toString() | gasPriceFilter }}
+              span.small-value {{ bestStats.block.reveal_txns.length }} txs
           div.col-xs-2.stat-holder.box
             div.gasprice.text-info
               i.icon-gasprice
-              span.small-title commit request(last block)
-              span.small-value {{ bestStats.gasPrice.toString() | gasPriceFilter }}
+              span.small-title commit req(last block)
+              span.small-value {{ bestStats.block.commit_txns.length }} txs
           div.col-xs-2.stat-holder.box
             div.gasprice.text-info
               i.icon-gasprice
-              span.small-title tally request(last block)
-              span.small-value {{ bestStats.block.gasLimit }} gas
+              span.small-title tally req(last block)
+              span.small-value {{ bestStats.block.tally_txns.length }} txs
           div.col-xs-2.stat-holder.box
             div.page-latency(class="{{ {active: true, latency: latency} | latencyClass }}")
               i.icon-clock
@@ -131,9 +132,9 @@ block content
                 div.big-info.chart.text-info
                   //- i.icon-uncle
                   span.small-title rad request&nbsp;
-                    span.small (25 blocks per bar)
+                    //- span.small (25 blocks per bar)
                   //- span.small-value {{ bestStats.block.uncles.length }}/{{ uncleCount }}
-                  sparkchart.big-details.spark-uncles(data="{{uncleCountChart.join(',')}}")
+                  sparkchart.big-details.spark-uncles(data="{{RADCountChart.join(',')}}", tooltipsuffix=" RAD req(s)")
 
               div.col-xs-3.stat-holder
                 div.big-info.chart.text-info
@@ -204,7 +205,7 @@ block content
             th
               i.icon-check-o(data-toggle="tooltip", data-placement="top", title="Block transactions", ng-click="orderTable(['-stats.block.transactions.length'], false)")
             th
-              i.icon-uncle(data-toggle="tooltip", data-placement="top", title="Uncles", ng-click="orderTable(['-stats.block.uncles.length'], false)")
+              i.icon-uncle(data-toggle="tooltip", data-placement="top", title="Uncles", ng-click="orderTable(['-stats.block.data_request_txns.length'], false)")
             th.th-blocktime
               i.icon-time(data-toggle="tooltip", data-placement="top", title="Last block time", ng-click="orderTable(['-stats.block.received'], false)")
             th.th-peerPropagationTime
@@ -239,7 +240,7 @@ block content
             td(class="{{ node.stats | blockClass : bestBlock }}")
               span.small {{node.stats.block.totalDifficulty | number}}
             td(style="padding-left: 14px;") {{node.stats.block.transactions.length || 0}}
-            td(style="padding-left: 14px;") {{node.stats.block.uncles.length || 0}}
+            td(style="padding-left: 14px;") {{node.stats.block.data_request_txns.length || 0}}
             td(class="{{ node.stats.block.received | timeClass : node.stats.active }}") {{node.stats.block.received | blockTimeFilter }}
             td(class="{{ node.stats | propagationTimeClass : bestBlock }}")
               div.propagationBox

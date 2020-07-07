@@ -18,7 +18,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, socket, _, toastr)
 	$scope.avgBlockTime = 0;
 	$scope.blockPropagationAvg = 0;
 	$scope.avgHashrate = 0;
-	$scope.uncleCount = 0;
+	$scope.RADCount = 0;
 	$scope.bestStats = {};
 
 	$scope.lastBlocksTime = _.fill(Array(MAX_BINS), 2);
@@ -31,7 +31,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, socket, _, toastr)
 	$scope.nodes = [];
 	$scope.map = [];
 	$scope.blockPropagationChart = [];
-	$scope.uncleCountChart = _.fill(Array(MAX_BINS), 2);
+	$scope.RADCountChart = _.fill(Array(MAX_BINS), 2);
 	$scope.coinbases = [];
 
 	$scope.latency = 0;
@@ -325,11 +325,11 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, socket, _, toastr)
 				if( !_.isEqual($scope.lastBlocksTime, data.blocktime) && data.blocktime.length >= MAX_BINS )
 					$scope.lastBlocksTime = data.blocktime;
 
-				data.uncleCount.reverse();
+				// data.uncleCount.reverse();
 
-				if( !_.isEqual($scope.uncleCountChart, data.uncleCount) && data.uncleCount.length >= MAX_BINS ) {
-					$scope.uncleCount = data.uncleCount[data.uncleCount.length-2] + data.uncleCount[data.uncleCount.length-1];
-					$scope.uncleCountChart = data.uncleCount;
+				if( !_.isEqual($scope.RADCountChart, data.RADCount) && data.RADCount.length >= MAX_BINS ) {
+					$scope.RADCount = data.RADCount[data.RADCount.length-2] + data.RADCount[data.RADCount.length-1];
+					$scope.RADCountChart = data.RADCount;
 				}
 
 				break;
