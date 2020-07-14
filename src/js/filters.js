@@ -126,40 +126,40 @@ angular.module('netStatsApp.filters', [])
 		return result.toFixed(2) + ' ' + unit + 'H';
 	};
 })
-.filter('nodeVersion', function($sce) {
-	return function(version) {
-		if(version)
-		{
-			var tmp = version.split('/');
+// .filter('nodeVersion', function($sce) {
+// 	return function(version) {
+// 		if(version)
+// 		{
+// 			var tmp = version.split('/');
 
-			tmp[0] = tmp[0].replace('Ethereum(++)', 'Eth');
+// 			tmp[0] = tmp[0].replace('Ethereum(++)', 'Eth');
 
-			if(tmp[0].indexOf('pyethapp') === 0)
-			{
-				tmp[0] = 'pyeth';
-			}
+// 			if(tmp[0].indexOf('pyethapp') === 0)
+// 			{
+// 				tmp[0] = 'pyeth';
+// 			}
 
-			if(tmp[1] && tmp[1][0] !== 'v' && tmp[1][2] !== '.')
-			{
-				tmp.splice(1,1);
-			}
+// 			if(tmp[1] && tmp[1][0] !== 'v' && tmp[1][2] !== '.')
+// 			{
+// 				tmp.splice(1,1);
+// 			}
 
-			if(tmp[2] && tmp[2] === 'Release'){
-				tmp.splice(2,1);
-			}
+// 			if(tmp[2] && tmp[2] === 'Release'){
+// 				tmp.splice(2,1);
+// 			}
 
-			if(tmp[2] && tmp[2].indexOf('Linux') === 0)
-				tmp[2] = 'linux';
+// 			if(tmp[2] && tmp[2].indexOf('Linux') === 0)
+// 				tmp[2] = 'linux';
 
-			if(tmp[2] && tmp[2].indexOf('Darwin') === 0)
-				tmp[2] = 'darwin';
+// 			if(tmp[2] && tmp[2].indexOf('Darwin') === 0)
+// 				tmp[2] = 'darwin';
 
-			return $sce.trustAsHtml(tmp.join('/'));
-		}
+// 			return $sce.trustAsHtml(tmp.join('/'));
+// 		}
 
-		return '';
-	};
-})
+// 		return '';
+// 	};
+// })
 .filter('blockClass', function() {
 	return function(current, best) {
 		if( ! current.active)
@@ -474,22 +474,9 @@ angular.module('netStatsApp.filters', [])
 	return function(node) {
 		var tooltip = [];
 		var string = '';
-
-		if(node.info.node) {
-			var eth_version = node.info.node.split('/');
-
-      if(eth_version[1]){
-			  if(eth_version[1][0] !== 'v' && eth_version[1][2] !== '.')
-			  {
-				  eth_version.splice(1,1);
-			  }
-
-			  string = "<b>" + node.info.node + "</b>";
+      	if(node.info.node){
+			  string = "Version: <b>" + (node.info.node) + "</b>";
 			  tooltip.push(string);
-
-			  string = "Version: <b>" + (eth_version[1]) + "</b>";
-			  tooltip.push(string);
-      }
 		}
 
 		if(node.info.net !== '') {
@@ -541,7 +528,6 @@ angular.module('netStatsApp.filters', [])
 
 		if(node.info.contact !== '') {
 			string = "Contact: <b>" + (typeof node.info.contact !== 'undefined' ? node.info.contact : '-') + "</b>";
-
 			tooltip.push(string);
 		}
 
@@ -581,8 +567,9 @@ angular.module('netStatsApp.filters', [])
 	return function(info, current) {
 		if(typeof info === 'undefined' || typeof info.client === 'undefined' || typeof info.client === '')
 			return 'text-danger';
-
-		if(compareVersions(info.client, '<', current))
+		console.log(info.client, '<', current)
+		// if(compareVersions(info.client, '<', current))
+		if (info.node !== current)
 			return 'text-danger';
 
 		return 'hidden';

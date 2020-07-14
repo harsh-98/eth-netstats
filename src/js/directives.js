@@ -104,8 +104,10 @@ angular.module('netStatsApp.directives', [])
 				{
 					attrs.$observe("data", function (newValue)
 					{	
+						const slEvent = 'sparklineClick';
 						element.html(newValue);
 						element.addClass("big-details");
+						element.unbind(slEvent)
 						element.sparkline('html', {
 							type: 'bar',
 							tooltipSuffix: (attrs.tooltipsuffix || ''),
@@ -116,6 +118,13 @@ angular.module('netStatsApp.directives', [])
 
 								return tooltip;
 							}
+						});
+						// https://omnipotent.net/jquery.sparkline/#onclick
+						element.bind(slEvent, function(ev) {
+							console.log(ev);
+							// var sparkline = ev.sparklines[0],
+							// 	region = sparkline.getCurrentRegionFields();
+							// alert("Clicked on x="+region.x+" y="+region.y);
 						});
 					});
 				};

@@ -18,7 +18,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 	$scope.upTimeTotal = 0;
 	$scope.avgBlockTime = 0;
 	$scope.activePkh = 0;
-	$scope.superBlock = {};
+	$scope.superBlock = {index:0};
 	$scope.blockPropagationAvg = 0;
 	$scope.avgHashrate = 0;
 	$scope.RADCount = 0;
@@ -41,7 +41,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 
 	$scope.latency = 0;
 
-	$scope.currentApiVersion = "0.1.1";
+	$scope.currentApiVersion = "0.9.1";
 
 	$scope.predicate = $localStorage.predicate || ['-pinned', '-stats.active', '-stats.block.number', 'stats.block.propagation'];
 	$scope.reverse = $localStorage.reverse || false;

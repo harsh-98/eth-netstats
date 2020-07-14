@@ -114,7 +114,7 @@ api.on('connection', function (socket)
 
 		if( !_.isUndefined(data.id) && !_.isUndefined(data.info) )
 		{
-			data.ip = url.join(":");
+			data.ip = ip;
 			data.spark = socket.id;
 			data.latency = getLatencyMs(socket) || 0;
 
