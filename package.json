@@ -29,6 +29,7 @@
     "primus": "^6.0.5",
     "primus-emit": "^1.0.0",
     "primus-spark-latency": "^0.1.1",
+    "socket.io": "^2.3.0",
     "ws": "^1.1.1"
   },
   "repository": {
