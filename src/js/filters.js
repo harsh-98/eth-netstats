@@ -565,9 +565,8 @@ angular.module('netStatsApp.filters', [])
 })
 .filter('nodeClientClass', function() {
 	return function(info, current) {
-		if(typeof info === 'undefined' || typeof info.client === 'undefined' || typeof info.client === '')
+		if(typeof info === 'undefined' || typeof info.node === 'undefined' || typeof info.node === '')
 			return 'text-danger';
-		console.log(info.client, '<', current)
 		// if(compareVersions(info.client, '<', current))
 		if (info.node !== current)
 			return 'text-danger';

@@ -121,10 +121,12 @@ angular.module('netStatsApp.directives', [])
 						});
 						// https://omnipotent.net/jquery.sparkline/#onclick
 						element.bind(slEvent, function(ev) {
-							console.log(ev);
-							// var sparkline = ev.sparklines[0],
-							// 	region = sparkline.getCurrentRegionFields();
-							// alert("Clicked on x="+region.x+" y="+region.y);
+							// let and `` doesn't work.
+							const  region = ev.sparklines[0].getCurrentRegionFields();
+							const offset = region[0].offset ? region[0].offset : 0;
+							const blockHash = scope.$parent.blockHashes[offset];
+							const searchUrl = scope.$parent.searchUrl;
+							window.open(searchUrl + '/' + blockHash );
 						});
 					});
 				};

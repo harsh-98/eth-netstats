@@ -11,7 +11,9 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 	$scope.frontierHash = '0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa';
 	$scope.nodesTotal = 0;
 	$scope.nodesActive = 0;
-	$scope.explorerUrl = "https://witnet.network/search";
+	$scope.explorerUrl = "https://witnet.network";
+	$scope.searchUrl = "https://witnet.network/search";
+	$scope.reputationUrl = "https://witnet.network/reputation";
 	$scope.bestBlock = 0;
 	$scope.lastBlock = 0;
 	$scope.lastDifficulty = 0;
@@ -25,6 +27,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 	$scope.bestStats = {};
 
 	$scope.lastGasLimit = _.fill(Array(MAX_BINS), 2);
+	$scope.blockHashes = _.fill(Array(MAX_BINS), 2);
 	$scope.lastBlocksTime = _.fill(Array(MAX_BINS), 2);
 	$scope.difficultyChart = _.fill(Array(MAX_BINS), 2);
 	$scope.transactionDensity = _.fill(Array(MAX_BINS), 2);
@@ -343,24 +346,34 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 				break;
 
 			case "charts":
-				if( !_.isEqual($scope.avgBlockTime, data.avgBlocktime) )
-					$scope.avgBlockTime = data.avgBlocktime;
+				// if( !_.isEqual($scope.avgBlockTime, data.avgBlocktime) )
+				// 	$scope.avgBlockTime = data.avgBlocktime;
 
+				// if( !_.isEqual($scope.avgHashrate, data.avgHashrate) )
+				// 	$scope.avgHashrate = data.avgHashrate;
 
-				if( !_.isEqual($scope.avgHashrate, data.avgHashrate) )
-					$scope.avgHashrate = data.avgHashrate;
+				// if( !_.isEqual($scope.lastGasLimit, data.gasLimit) && data.gasLimit.length >= MAX_BINS )
+				// 	$scope.lastGasLimit = data.gasLimit;
 
-				if( !_.isEqual($scope.lastGasLimit, data.gasLimit) && data.gasLimit.length >= MAX_BINS )
-					$scope.lastGasLimit = data.gasLimit;
+				// if( !_.isEqual($scope.blockHashes, data.gasLimit) && data.gasLimit.length >= MAX_BINS )
+				// 	$scope.blockHashes = data.blockHashes;
 
-				if( !_.isEqual($scope.lastBlocksTime, data.blocktime) && data.blocktime.length >= MAX_BINS )
-					$scope.lastBlocksTime = data.blocktime;
+				// if( !_.isEqual($scope.lastBlocksTime, data.blocktime) && data.blocktime.length >= MAX_BINS )
+				// 	$scope.lastBlocksTime = data.blocktime;
+	
+				// if( !_.isEqual($scope.difficultyChart, data.difficulty) && data.difficulty.length >= MAX_BINS )
+				// 	$scope.difficultyChart = data.difficulty;
 
-				if( !_.isEqual($scope.height, data.height) && data.height.length >= MAX_BINS )
+				if( !_.isEqual($scope.height, data.height) && data.height.length >= MAX_BINS ) {
 					$scope.height = data.height;
-
-				if( !_.isEqual($scope.difficultyChart, data.difficulty) && data.difficulty.length >= MAX_BINS )
 					$scope.difficultyChart = data.difficulty;
+					$scope.lastBlocksTime = data.blocktime;
+					$scope.blockHashes = data.blockHashes;
+					$scope.lastGasLimit = data.gasLimit;
+					$scope.avgHashrate = data.avgHashrate;
+					$scope.avgBlockTime = data.avgBlocktime;
+				}
+
 
 				if( !_.isEqual($scope.blockPropagationChart, data.propagation.histogram) ) {
 					$scope.blockPropagationChart = data.propagation.histogram;

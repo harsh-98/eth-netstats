@@ -10,7 +10,7 @@ block content
             i.icon-block
           div.big-details-holder
             span.small-title best block
-            a.big-details.text-info(href="{{explorerUrl}}/{{bestStats.block.hash}}", target="_blank", data-toggle="tooltip", data-placement="below", data-html="true", data-original-title="This link will take you to explorer")
+            a.big-details.text-info(href="{{searchUrl}}/{{bestStats.block.hash}}", target="_blank", data-toggle="tooltip", data-placement="below", data-html="true", data-original-title="This link will take you to explorer")
              {{'#'}}{{ bestBlock | number}} 
           div.clearfix
       div.col-xs-2.stat-holder
@@ -45,7 +45,8 @@ block content
             i.icon-hashrate
           div.big-details-holder
             span.small-title active pkh with reputation
-            span.big-details {{ activePkh  }}
+            a.big-details.text-orange(href="{{reputationUrl}}", target="_blank", data-toggle="tooltip", data-placement="right", data-html="true", data-original-title="This link will take you to explorer")
+                {{ activePkh  }}
           div.clearfix
       div.col-xs-2.stat-holder
         div.big-info.difficulty.text-success
@@ -54,7 +55,7 @@ block content
           div.big-details-holder
             span.small-title super block
               //- span.small-title.text-success 
-              a.big-details.text-success(href="{{explorerUrl}}/{{superBlock.hash}}", target="_blank", data-toggle="tooltip", data-placement="below", data-html="true", data-original-title="This link will take you to explorer")
+              a.big-details.text-success(href="{{searchUrl}}/{{superBlock.hash}}", target="_blank", data-toggle="tooltip", data-placement="below", data-html="true", data-original-title="This link will take you to explorer")
                 //- {{ superBlock.hash |  bigHashFilter }}
                 {{'#'}}{{ superBlock.index }}
           div.clearfix

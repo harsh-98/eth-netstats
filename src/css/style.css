@@ -48,6 +48,7 @@ table td {
 	background: #ff8a00;
 }
 
+
 .bg-danger,
 .text-danger .propagationBox {
 	background: #F74B4B;
@@ -72,6 +73,10 @@ table td {
 
 .text-orange {
 	color: #ff8a00;
+}
+a.text-orange:hover {
+	color: #ff8a00;
+	text-decoration: underline;
 }
 
 .container-fluid {
