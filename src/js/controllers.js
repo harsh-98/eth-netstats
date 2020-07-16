@@ -291,6 +291,12 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 						$scope.nodes[index].stats.peers = data.stats.peers;
 						$scope.nodes[index].stats.gasPrice = data.stats.gasPrice;
 						$scope.nodes[index].stats.uptime = data.stats.uptime;
+						if (_.isUndefined($scope.nodes[index].stats.pendingRAD)) {
+							$scope.nodes[index].stats.pendingRAD =0;
+						}
+						if (_.isUndefined($scope.nodes[index].stats.pendingVTT)) {
+							$scope.nodes[index].stats.pendingVTT =0;
+						}
 
 						if( !_.isUndefined(data.stats.latency) && _.get($scope.nodes[index], 'stats.latency', 0) !== data.stats.latency )
 						{
