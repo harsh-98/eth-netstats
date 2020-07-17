@@ -110,10 +110,10 @@ angular.module('netStatsApp.directives', [])
 						element.unbind(slEvent)
 						element.sparkline('html', {
 							type: 'bar',
-							tooltipSuffix: (attrs.tooltipsuffix || ''),
+							// tooltipSuffix: (attrs.tooltipsuffix || ''),
 							tooltipFormatter: function (spark, opt, ms) {
 								var tooltip = '<div class="tooltip-arrow"></div><div class="tooltip-inner">';
-								tooltip += "Block #"+scope.$parent.height[ms[0].offset]+": "+ms[0].value+ (attrs.tooltipsuffix || '');
+								tooltip += "Block #"+scope.$parent.height[ms[0].offset]+": "+ms[0].value+ (" " + attrs.tooltipsuffix || '');
 								tooltip += '</div>';
 
 								return tooltip;

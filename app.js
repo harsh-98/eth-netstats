@@ -106,7 +106,8 @@ api.on('connection', function (socket)
 		port = url[1];
 		if( _.isUndefined(data.secret) || WS_SECRET.indexOf(data.secret) === -1 || banned.indexOf(socket.handshake.headers.host) >= 0 )
 		{
-			socket.end(undefined, { reconnect: false });
+			socket.disconnect();
+			// socket.close();
 			console.error('API', 'CON', 'Closed - wrong auth', data);
 
 			return false;
