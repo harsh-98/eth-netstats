@@ -96,7 +96,7 @@ function getLatencyMs(socket) {
 	);
 }
 // Init API Socket events
-api.on('connection', function (socket)
+api.on('connect', function (socket)
 {
 	socket.on('hello', function (data)
 	{
@@ -397,7 +397,9 @@ api.on('connection', function (socket)
 		}
 	});
 
-
+	socket.on('error', function (err) {
+		console.error('API', 'CON', 'Connection end error:', err);
+	});
 	socket.on('end', function (data)
 	{
 		Nodes.inactive(socket.id, function (err, stats)
