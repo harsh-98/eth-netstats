@@ -44,7 +44,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 
 	$scope.latency = 0;
 
-	$scope.currentApiVersion = "0.9.1";
+	$scope.currentApiVersion = "0.9.3";
 
 	$scope.predicate = $localStorage.predicate || ['-pinned', '-stats.active', '-stats.block.number', 'stats.block.propagation'];
 	$scope.reverse = $localStorage.reverse || false;
@@ -366,7 +366,7 @@ netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, soc
 
 				// if( !_.isEqual($scope.lastBlocksTime, data.blocktime) && data.blocktime.length >= MAX_BINS )
 				// 	$scope.lastBlocksTime = data.blocktime;
-	
+
 				// if( !_.isEqual($scope.difficultyChart, data.difficulty) && data.difficulty.length >= MAX_BINS )
 				// 	$scope.difficultyChart = data.difficulty;
 
